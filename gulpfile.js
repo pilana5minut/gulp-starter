@@ -5,7 +5,8 @@ const gulp = require("gulp");
 const autoPrefixer = require("gulp-autoprefixer");
 const cleanCss = require("gulp-clean-css");
 const fileInclude = require("gulp-file-include");
-const fonter = require("gulp-fonter");
+const imageMin = require("gulp-imagemin")
+const newer = require("gulp-newer")
 const notify = require("gulp-notify");
 const rename = require("gulp-rename");
 const sass = require("gulp-sass")(require("sass"));
@@ -15,7 +16,7 @@ const ttf2woff2 = require("gulp-ttf2woff2");
 
 ////////// Delete build folder //////////
 
-function deleteBuildDirectory() {
+function delPublicDir() {
   return del("./public")
 }
 
@@ -41,6 +42,15 @@ function taskStyles() {
     .pipe(browserSync.stream())
 }
 
+////////// For Images //////////
+
+function taskImageMin() {
+  return gulp.src("./src/images/*")
+    .pipe(newer("./public/images"))
+    .pipe(imageMin({ verbose: true }))
+    .pipe(gulp.dest("./public/images"))
+}
+
 ////////// For SVG //////////
 
 // function taskSvgSprite() {
@@ -58,7 +68,7 @@ function taskStyles() {
 
 ////////// For Fonts //////////
 
-function taskConvertFonts() {
+function taskFonts() {
   gulp.src("./src/fonts/*.ttf")
     // .pipe(fonter({ formats: ["ttf", "woff", "eot", "svg", "otf"] }))
     // .pipe(gulp.dest("./public/fonts"))
@@ -75,16 +85,17 @@ function taskBrSync() {
   browserSync.init({ server: { baseDir: "./public" } });
   gulp.watch("./src/html/**/*.html", taskHtml);
   gulp.watch("./src/scss/**/*.scss", taskStyles);
+  gulp.watch("./src/images/*", taskImageMin);
 }
 
 ////////// Exports ////////////////////////////////////////////////////////////////////////////////
 
-exports.del = deleteBuildDirectory
+exports.del = delPublicDir
 exports.html = taskHtml
 exports.stl = taskStyles
 exports.bs = taskBrSync
 // exports.svg = taskSvgSprite
-exports.font = taskConvertFonts
+exports.font = taskFonts
+exports.images = taskImageMin
 
-// exports.default = gulp.series(deleteBuildDirectory, taskHtml, taskStyles, taskConvertFonts, taskBrSync)
-exports.default = gulp.series(deleteBuildDirectory, taskConvertFonts)
+exports.default = gulp.series(delPublicDir, taskImageMin, taskFonts, taskHtml, taskStyles, taskBrSync)
