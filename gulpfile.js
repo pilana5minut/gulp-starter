@@ -5,14 +5,16 @@ const gulp = require("gulp");
 const autoPrefixer = require("gulp-autoprefixer");
 const cleanCss = require("gulp-clean-css");
 const fileInclude = require("gulp-file-include");
-const imageMin = require("gulp-imagemin")
-const newer = require("gulp-newer")
+const imageMin = require("gulp-imagemin");
+const newer = require("gulp-newer");
 const notify = require("gulp-notify");
 const rename = require("gulp-rename");
 const sass = require("gulp-sass")(require("sass"));
 const svgSprite = require("gulp-svg-sprite");
+const tinyPngCompress = require("gulp-tinypng-compress");
 const ttf2woff = require("gulp-ttf2woff");
 const ttf2woff2 = require("gulp-ttf2woff2");
+const webp = require("gulp-webp");
 
 ////////// Delete build folder //////////
 
@@ -20,7 +22,10 @@ function delPublicDir() {
   return del("./public")
 }
 
-////////// For HTML //////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+////////// For HTML ///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 function taskHtml() {
   return gulp.src(["./src/html/*.html"])
@@ -29,7 +34,9 @@ function taskHtml() {
     .pipe(browserSync.stream())
 }
 
-////////// For Styles //////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+////////// For Styles /////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
 
 function taskStyles() {
   return gulp.src("./src/scss/**/*.scss", { sourcemaps: true })
@@ -41,20 +48,50 @@ function taskStyles() {
     .pipe(gulp.dest("./public/css", { sourcemaps: true }))
     .pipe(browserSync.stream())
 }
-
-////////// For Images //////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+////////// For Images /////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
 
 function taskImageMin() {
-  return gulp.src("./src/images/*")
+  return gulp.src("./src/images/**/*")
+    .pipe(newer("./public/images"))
+    .pipe(webp())
+    .pipe(gulp.dest("./public/images"))
+    .pipe(gulp.src("./src/images/**/*"))
     .pipe(newer("./public/images"))
     .pipe(imageMin({ verbose: true }))
     .pipe(gulp.dest("./public/images"))
 }
 
-////////// For SVG //////////
+function taskImageMinBuild() {
+  return gulp.src("./src/images/*")
+    // .pipe(newer("./public/images"))
+    .pipe(webp())
+    .pipe(gulp.dest("./public/images"))
+    .pipe(gulp.src(["./src/images/**/*", "!./src/images/**/*.png"]))
+    // .pipe(newer("./public/images"))
+    .pipe(imageMin({ verbose: true }))
+    .pipe(gulp.dest("./public/images"))
+}
+
+function tackTinyPng() {
+  return gulp.src("src/**/*.png")
+    .pipe(tinyPngCompress({
+      key: "",
+      sigFile: "images/.tinypng-sigs",
+      log: true,
+      summarise: true
+    }))
+    .pipe(gulp.dest("./public"));
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+////////// For SVG ////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 // function taskSvgSprite() {
-//   return gulp.src("./src/images/svg/**/*.svg")
+//   return gulp.src("./src/images/for-svg-sprite/**/*.svg")
 //     .pipe(svgSprite({
 //       mode: {
 //         stack: {
@@ -62,11 +99,13 @@ function taskImageMin() {
 //         }
 //       },
 //     }))
-//     .pipe(gulp.dest("./public/images/svg"))
+//     .pipe(gulp.dest("./public/images"))
 //     .pipe(browserSync.stream())
 // }
 
-////////// For Fonts //////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+////////// For Fonts //////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
 
 function taskFonts() {
   gulp.src("./src/fonts/*.ttf")
@@ -79,7 +118,9 @@ function taskFonts() {
     .pipe(gulp.dest("./public/fonts/"))
 }
 
-////////// Local Server //////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+////////// Local Server ///////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
 
 function taskBrSync() {
   browserSync.init({ server: { baseDir: "./public" } });
@@ -88,14 +129,20 @@ function taskBrSync() {
   gulp.watch("./src/images/*", taskImageMin);
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 ////////// Exports ////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
 
 exports.del = delPublicDir
 exports.html = taskHtml
 exports.stl = taskStyles
-exports.bs = taskBrSync
+exports.images = taskImageMin
+exports.imagesb = taskImageMinBuild
+exports.tiny = tackTinyPng
 // exports.svg = taskSvgSprite
 exports.font = taskFonts
-exports.images = taskImageMin
+exports.bs = taskBrSync
 
-exports.default = gulp.series(delPublicDir, taskImageMin, taskFonts, taskHtml, taskStyles, taskBrSync)
+exports.dev = gulp.series(delPublicDir, taskFonts, taskHtml, taskStyles, taskImageMin, taskBrSync)
+
+exports.build = gulp.series(delPublicDir, taskFonts, taskHtml, taskStyles, tackTinyPng, taskImageMinBuild)

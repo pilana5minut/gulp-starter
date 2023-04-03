@@ -8,9 +8,14 @@ autoprefixer не работает
 # [gulp-clean-css][def5]
 # [gulp-file-include][def6]
 # [gulp-imagemin][def15]
-Версии пакета >7.1.0 не используют require() синтаксис.
+- Версии пакета >7.1.0 не используют require() синтаксис.<br>
+- Важен порядок запуска при составлении задач в более крупные операции с помощью series()<br>
+- Плагин очень слабо сжимает изображения в формате .png. В связи с этим, для компрессии .png в сборке применяется плагин “gulp-tinypng-compress”. В силу обстоятельств связанных с ограничением бесплатных запросов к API tinypng, данный плагин применяется только в итоговой сборке. На этапе разработки “gulp-imagemin” справляется вполне приемлемо, в сущности, просто копируя файлы из папки src в папку public практически не влияя на конечный размер файла.
 # [gulp-newer][def16]
-# [gulp-fonter ( не стал использовать )][def7]
+# [gulp-fonter ( Отказался от использования )][def7]
+Отказался от использования в пользу связки плагинов “gulp-ttf2woff” и “gulp-ttf2woff2”
+
+**В ходе экспериментов:**<br>
 **Получил из** .ttf -> .eot, .ttf, .woff (.ttf был просто перемещен)<br>
 **Получил из** .svg -> .svg (.svg был просто перемещен)<br>
 **Получил из** .eot -> .eot, .ttf, .woff (.eot был просто перемещен)<br>
@@ -22,8 +27,25 @@ autoprefixer не работает
 # [gulp-sass][def10]
 # [gulp-svg-sprite][def11]
 Полную документацию по конфигурации svg-sprite [можно найти здесь][def12]
+
+# [gulp-tinypng ( Отказался от использования )][def18]
+Отказался от использования в пользу плагина “gulp-tinypng-compress”
+
+# [gulp-tinypng-compress][def17]
+В силу обстоятельств связанных с ограничением бесплатных запросов к API tinypng, данный плагин применяется только в итоговой сборке.<br>
+На этапе разработки “gulp-imagemin” справляется вполне приемлемо, в сущности, просто копируя файлы из папки src в папку public практически не влияя на конечный размер файла.<br>
+**Важно!** Не забыть добавить API_KEY.<br>
+**Преимущества** перед gulp-tinypng.<br>
+- Активно поддерживаемый и развивающийся форк плагина gulp-tinypng.<br>
+- В отличии от своего прародителя, регулярно обновляется.<br>
+- В отличии от своего прародителя, не создает временных файлов папок.<br>
+- Также как и прародитель, умеет сравнивать существующие подписи md5,<br>
+благодаря чему файлы уже прошедшие процесс сжатия не обрабатываться повторно,<br>
+это позволяет сохранять лимит API_KEY.
+
 # [gulp-ttf2woff][def13]
 # [gulp-ttf2woff2][def14]
+# [gulp-webp][def19]
 
 [def]: https://github.com/BrowserSync/browser-sync
 [def2]: https://github.com/sindresorhus/del
@@ -41,3 +63,6 @@ autoprefixer не работает
 [def14]: https://github.com/nfroidure/gulp-ttf2woff2
 [def15]: https://github.com/sindresorhus/gulp-imagemin
 [def16]: https://github.com/tschaub/gulp-newer
+[def17]: https://github.com/stnvh/gulp-tinypng-compress
+[def18]: https://github.com/creativeaura/gulp-tinypng
+[def19]: https://github.com/sindresorhus/gulp-webp
