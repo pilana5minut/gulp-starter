@@ -2,6 +2,7 @@
 
 html {
   box-sizing: border-box;
+  scrollbar-gutter: stable;
 }
 
 *,
@@ -11,7 +12,6 @@ html {
 }
 
 body {
-  scrollbar-gutter: stable;
   scroll-behavior: smooth;
   color: #000;
   background-color: #666;
@@ -42,8 +42,6 @@ a {
   text-decoration: none;
   color: inherit;
 }
-
-
 
 img {
   height: auto;

@@ -23,10 +23,21 @@ autoprefixer не работает
 **Получил из** .woff2 -> .woff2 (.woff2 был просто перемещен)<br>
 **Получил из** .otf -> .eot, .ttf, .woff, .otf (.otf был просто перемещен)<br>
 # [gulp-notify][def8]
+# [gulp-plumber][def20]
 # [gulp-rename][def9]
 # [gulp-sass][def10]
+# [gulp-size][def21]
 # [gulp-svg-sprite][def11]
-Полную документацию по конфигурации svg-sprite [можно найти здесь][def12]
+Работа плагина основана на библиотеке [svg-sprite][def23]<br>
+Документация библиотеки svg-sprite<br>
+
+- [Стандартный API][def24]<br>
+- [Использование командной строки][def25]<br>
+- [Конфигурация][def26]<br>
+- [Обертки Grunt & Gulp][def27]<br>
+- [Внедрение метаданных][def28]<br>
+- [Выравнивание и дублирование фигур][def29]<br>
+- [Настройка и добавление выходных форматов][def30]<br>
 
 # [gulp-tinypng ( Отказался от использования )][def18]
 Отказался от использования в пользу плагина “gulp-tinypng-compress”
@@ -66,3 +77,13 @@ autoprefixer не работает
 [def17]: https://github.com/stnvh/gulp-tinypng-compress
 [def18]: https://github.com/creativeaura/gulp-tinypng
 [def19]: https://github.com/sindresorhus/gulp-webp
+[def20]: https://github.com/floatdrop/gulp-plumber
+[def21]: https://github.com/sindresorhus/gulp-size
+[def23]: https://github.com/svg-sprite/svg-sprite
+[def24]: https://github.com/svg-sprite/svg-sprite/blob/main/docs/api.md#svg-sprite
+[def25]: https://github.com/svg-sprite/svg-sprite/blob/main/docs/command-line.md#svg-sprite
+[def26]: https://github.com/svg-sprite/svg-sprite/blob/main/docs/configuration.md#svg-sprite
+[def27]: https://github.com/svg-sprite/svg-sprite/blob/main/docs/grunt-gulp.md#svg-sprite
+[def28]: https://github.com/svg-sprite/svg-sprite/blob/main/docs/meta-data.md#svg-sprite
+[def29]: https://github.com/svg-sprite/svg-sprite/blob/main/docs/shape-alignment.md#svg-sprite
+[def30]: https://github.com/svg-sprite/svg-sprite/blob/main/docs/templating.md#svg-sprite

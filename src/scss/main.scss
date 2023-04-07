@@ -1,10 +1,10 @@
-// controller import
-
+// import controller
+@import "controller/variables";
+@import "controller/fonts";
 @import "controller/global";
 @import "controller/common";
 
-// partials import
-
+// import partials
 @import "partials/footer";
 @import "partials/header";
 @import "partials/section-about";
