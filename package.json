@@ -20,6 +20,8 @@
     "gulp-cheerio": "^1.0.0",
     "gulp-clean-css": "^4.3.0",
     "gulp-file-include": "^2.3.0",
+    "gulp-group-css-media-queries": "^1.2.2",
+    "gulp-htmlmin": "^5.0.1",
     "gulp-imagemin": "^7.1.0",
     "gulp-newer": "^1.4.0",
     "gulp-notify": "^4.0.0",

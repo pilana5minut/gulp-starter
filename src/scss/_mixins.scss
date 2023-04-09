@@ -1,0 +1,15 @@
+@mixin font-face($font-family, $url, $weight, $style) {
+  @font-face {
+    font-family: "#{$font-family}";
+    src: url("#{$url}.woff2") format("woff2");
+    // src: url("#{$url}.woff") format("woff");
+    font-weight: #{$weight};
+    font-style: $style;
+    font-display: swap;
+  }
+
+  // Описание:
+  // Для получения в итогой сборке шрифтов в формате woff,
+  // необходимо раскомментировать pipe с плагином ttf2woff()
+  // в gulpfile.js
+}

@@ -7,6 +7,8 @@
 autoprefixer не работает
 # [gulp-clean-css][def5]
 # [gulp-file-include][def6]
+# [gulp-group-css-media-queries][def31]
+# [gulp-htmlmin][def22]
 # [gulp-imagemin][def15]
 - Версии пакета >7.1.0 не используют require() синтаксис.<br>
 - Важен порядок запуска при составлении задач в более крупные операции с помощью series()<br>
@@ -87,3 +89,5 @@ autoprefixer не работает
 [def28]: https://github.com/svg-sprite/svg-sprite/blob/main/docs/meta-data.md#svg-sprite
 [def29]: https://github.com/svg-sprite/svg-sprite/blob/main/docs/shape-alignment.md#svg-sprite
 [def30]: https://github.com/svg-sprite/svg-sprite/blob/main/docs/templating.md#svg-sprite
+[def22]: https://github.com/jonschlinkert/gulp-htmlmin
+[def31]: https://github.com/avaly/gulp-group-css-media-queries

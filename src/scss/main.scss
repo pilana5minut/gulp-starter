@@ -1,8 +1,7 @@
-// import controller
-@import "controller/variables";
-@import "controller/fonts";
-@import "controller/global";
-@import "controller/common";
+@import "variables";
+@import "mixins";
+@import "fonts";
+@import "common";
 
 // import partials
 @import "partials/footer";

@@ -1,51 +1,11 @@
 /* //////// Start include _section-about //////// */
 
 .section-about {
-  background-color: #999;
+  background-color: #777;
+  min-height: 222px;
 }
 
-.container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  column-gap: 20px;
-  flex-wrap: wrap;
-  row-gap: 33px;
-}
-
-.section-about__wrapper {}
-
-.section-about__title {
-  font-size: 33px;
-  color: rgb(168, 25, 0);
-}
-
-.section-about__paragraph {
-  font-size: 22px;
-}
-
-.cls-svg {
-  width: 222px;
-  height: 222px;
-  // stroke-width: 2;
-}
-
-.cls-sm {
-  transition: all 0.2s ease-in-out;
-  fill: forestgreen;
-
-
-  // stroke: black;
-  &:hover {
-    fill: gold;
-  }
-
-}
-
-
-.image-svg {
-  width: 333px;
-  height: 333px;
-  object-fit: fill;
-
+.parag {
+  font-family: "Alkatra";
+  font-size: 44px;
 }

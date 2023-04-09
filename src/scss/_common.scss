@@ -1,4 +1,4 @@
-/* //////// Start include _global //////// */
+/* //////// Start include common styles //////// */
 
 html {
   box-sizing: border-box;
@@ -14,7 +14,7 @@ html {
 body {
   scroll-behavior: smooth;
   color: #000;
-  background-color: #666;
+  background-image: url("../assets/cell.svg");
 }
 
 h1,
@@ -47,4 +47,12 @@ img {
   height: auto;
   max-width: 100%;
   object-fit: cover;
+}
+
+////////// common classes /////////////////////////////////////////////////////////////////////////
+
+.container {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 20px;
 }

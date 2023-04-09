@@ -6,6 +6,8 @@ const autoPrefixer = require("gulp-autoprefixer");
 const cheerio = require("gulp-cheerio")
 const cleanCss = require("gulp-clean-css");
 const fileInclude = require("gulp-file-include");
+const groupCssMediaQueries = require("gulp-group-css-media-queries")
+const htmlMin = require("gulp-htmlmin")
 const imageMin = require("gulp-imagemin");
 const newer = require("gulp-newer");
 const notify = require("gulp-notify");
@@ -18,46 +20,99 @@ const ttf2woff = require("gulp-ttf2woff");
 const ttf2woff2 = require("gulp-ttf2woff2");
 const webp = require("gulp-webp");
 
-////////// Delete build folder //////////
-
-function cleanDir() {
-  return del("./public")
-}
-
 ////////// For HTML ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 function devHtml() {
-  return gulp.src(['./src/*.html'])
-    .pipe(fileInclude().on("error", notify.onError(error => ({ title: "devHtml", message: error.message }))))
-    .pipe(gulp.dest('./public'))
+  return gulp.src(["./src/*.html"])
+    .pipe(fileInclude().on("error", notify.onError(error => ({
+      title: "devHtml",
+      message: error.message,
+    }))))
+    .pipe(gulp.dest("./public"))
     .pipe(browserSync.stream())
-};
+}
+
+function prodHtml() {
+  return gulp.src(["./src/*.html"])
+    .pipe(fileInclude().on("error", notify.onError(error => ({
+      title: "prodHtml",
+      message: error.message,
+    }))))
+    .pipe(size({
+      title: "  before  compression HTML",
+      // showFiles: true,
+    }))
+    .pipe(htmlMin({
+      collapseWhitespace: true,
+      removeComments: true,
+    }))
+    .pipe(size({
+      title: "   after  compression HTML",
+      // showFiles: true,
+    }))
+    .pipe(gulp.dest("./public"))
+}
 
 ////////// For Styles /////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 function devStyles() {
   return gulp.src("./src/scss/**/*.scss", { sourcemaps: true })
-    .pipe(sass({ outputStyle: "expanded" }).on("error", notify.onError(error => ({ title: "devStyles", message: error.message }))))
+    .pipe(sass({ outputStyle: "expanded" }).on("error", notify.onError(error => ({
+      title: "devStyles",
+      message: error.message,
+    }))))
     .pipe(autoPrefixer())
-    .pipe(size({ title: "before compression", showFiles: true, }))
+    .pipe(groupCssMediaQueries())
+    .pipe(size({
+      title: "  before  compression CSS",
+      // showFiles: true,
+    }))
     .pipe(gulp.dest("./public/css"))
     .pipe(rename({ suffix: ".min" }))
     .pipe(cleanCss({ level: 2 }))
-    .pipe(size({ title: " after compression", showFiles: true, }))
+    .pipe(size({
+      title: "   after  compression CSS",
+      // showFiles: true,
+    }))
     .pipe(gulp.dest("./public/css", { sourcemaps: true }))
     .pipe(browserSync.stream())
   /*  Описание:
-  1 - Забирает все файлы с расширением scss, во всех вложенных директориях, внутри директории scss (чаще всего это main и libs)
-  2 - Компилирует SASS в нативный CSS
-  3 - Добавляет вендорные префиксы основываясь на значении ключа "browserslist" указанного в package.json
-  4 - Выводит в консоль текущий размер всех файлов по отдельности и общий размер до сжатия
-  5 - Записывает промежуточный результат результат в директорию public (Без исходных карт!)
-  6 - Добавляет в имени файла суффикс .min
-  7 - Применяе алгоритм компрессии на основе параметра переданного в функцию cleanCss()
-  8 - Выводит в консоль текущий размер всех файлов по отдельности и общий размер после сжатия
-  9 - Записывает сжатый результат в директорию public (Добавляет исходные карты!)
+  01 - Забирает все файлы с расширением scss, во всех вложенных директориях, внутри директории scss (чаще всего это main и libs)
+  02 - Компилирует SASS в нативный CSS
+  03 - Добавляет вендорные префиксы основываясь на значении ключа "browserslist" указанного в package.json
+  04   Группирует все @meida выражения в конце файла, сортируя их основываясь на заданном условии
+  05 - Выводит в консоль текущий размер всех файлов по отдельности и общий размер до сжатия
+  06 - Записывает промежуточный результат результат в директорию public (Без исходных карт!)
+  07 - Добавляет в имени файла суффикс .min
+  08 - Применяе алгоритм компрессии на основе параметра переданного в функцию cleanCss()
+  09 - Выводит в консоль текущий размер всех файлов по отдельности и общий размер после сжатия
+  10 - Записывает сжатый результат в директорию public (Добавляет исходные карты!)
+  */
+}
+
+function prodStyles() {
+  return gulp.src("./src/scss/**/*.scss")
+    .pipe(sass({ outputStyle: "expanded" }).on("error", notify.onError(error => ({
+      title: "prodStyles",
+      message: error.message,
+    }))))
+    .pipe(autoPrefixer())
+    .pipe(groupCssMediaQueries())
+    .pipe(size({
+      title: "  before  compression CSS",
+      // showFiles: true,
+    }))
+    .pipe(rename({ suffix: ".min" }))
+    .pipe(cleanCss({ level: 2 }))
+    .pipe(size({
+      title: "   after  compression CSS",
+      // showFiles: true,
+    }))
+    .pipe(gulp.dest("./public/css"))
+  /*  Описание:
+    - production версия отличается от develop только лишь отсутствием исходных карт и не сохраняет промежуточный вариант
   */
 }
 
@@ -65,11 +120,21 @@ function devStyles() {
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 function devImageMin() {
-  return gulp.src(["./src/images/**/*.jpg", "./src/images/**/*.jpeg", "./src/images/**/*.png", "./src/images/*.svg"])
+  return gulp.src([
+    "./src/images/**/*.jpg",
+    "./src/images/**/*.jpeg",
+    "./src/images/**/*.png",
+    "./src/images/*.svg"
+  ])
     .pipe(newer("./public/images"))
     .pipe(webp())
     .pipe(gulp.dest("./public/images"))
-    .pipe(gulp.src(["./src/images/**/*.jpg", "./src/images/**/*.jpeg", "./src/images/**/*.png", "./src/images/*.svg"]))
+    .pipe(gulp.src([
+      "./src/images/**/*.jpg",
+      "./src/images/**/*.jpeg",
+      "./src/images/**/*.png",
+      "./src/images/*.svg"
+    ]))
     .pipe(newer("./public/images"))
     .pipe(imageMin({ verbose: true }))
     .pipe(gulp.dest("./public/images"))
@@ -85,10 +150,20 @@ function devImageMin() {
 }
 
 function prodImageMin() {
-  return gulp.src(["./src/images/**/*.jpg", "./src/images/**/*.jpeg", "./src/images/**/*.png", "./src/images/*.svg",])
+  return gulp.src([
+    "./src/images/**/*.jpg",
+    "./src/images/**/*.jpeg",
+    "./src/images/**/*.png",
+    "./src/images/*.svg",
+  ])
     .pipe(webp())
     .pipe(gulp.dest("./public/images"))
-    .pipe(gulp.src(["./src/images/**/*", "!./src/images/**/*.png", "!./src/images/**/*.svg", "!./src/images/__sprite"]))
+    .pipe(gulp.src([
+      "./src/images/**/*",
+      "!./src/images/**/*.png",
+      "!./src/images/**/*.svg",
+      "!./src/images/__sprite"
+    ]))
     .pipe(imageMin({ verbose: true }))
     .pipe(gulp.dest("./public/images"))
   /*  Описаеие:
@@ -124,9 +199,9 @@ function devSvgSprite() {
   return gulp.src("./src/images/__sprite/*.svg")
     .pipe(cheerio({
       run: function ($) {
-        $('[fill]').removeAttr('fill');
-        $('[stroke]').removeAttr('stroke');
-        $('[style]').removeAttr('style');
+        $("[fill]").removeAttr("fill");
+        $("[stroke]").removeAttr("stroke");
+        $("[style]").removeAttr("style");
       },
       parserOptions: {
         xmlMode: true
@@ -154,40 +229,85 @@ function devSvgSprite() {
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 function devFonts() {
-  gulp.src("./src/fonts/*.ttf")
-    .pipe(ttf2woff())
-    .pipe(gulp.dest("./public/fonts/"))
+  // gulp.src("./src/fonts/*.ttf")
+  //   .pipe(ttf2woff())
+  //   .pipe(gulp.dest("./public/fonts/"))
   return gulp.src("./src/fonts/*.ttf")
     .pipe(ttf2woff2())
     .pipe(gulp.dest("./public/fonts/"))
+  /*  Описание:
+      Для получения в итогой сборке шрифтов в формате woff,
+      необходимо раскомментировать строку src: url() в _font-face.scss
+  */
 }
 
-////////// Local Server ///////////////////////////////////////////////////////////////////////////
+////////// Delete build folder ////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+function cleanDir() {
+  return del("./public")
+}
+
+////////// Moving other assets ///////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+function movingAssets() {
+  return gulp.src("./src/assets/**")
+    .pipe(gulp.dest("./public/assets"))
+}
+
+////////// Local server ///////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 function watchFiles() {
   browserSync.init({ server: { baseDir: "./public" } });
-  gulp.watch("./src/html/**/*.html", devHtml);
+  gulp.watch("./src/**/*.html", devHtml);
   gulp.watch("./src/scss/**/*.scss", devStyles);
-  gulp.watch(["./src/images/**/*.jpg", "./src/images/**/*.jpeg", "./src/images/**/*.png", "./src/images/*.svg"], devImageMin);
   gulp.watch("./src/images/__sprite/*.svg", devSvgSprite);
+  gulp.watch("./src/assets/**", movingAssets);
+  gulp.watch("./src/fonts/*.ttf", devFonts);
+  gulp.watch([
+    "./src/images/**/*.jpg",
+    "./src/images/**/*.jpeg",
+    "./src/images/**/*.png",
+    "./src/images/*.svg"
+  ], devImageMin);
 }
 
 ////////// Exports ////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-exports.del = cleanDir
+exports.clean = cleanDir
 exports.d_html = devHtml
+exports.p_html = prodHtml
 exports.d_stl = devStyles
+exports.p_stl = prodStyles
 exports.d_images = devImageMin
 exports.p_images = prodImageMin
 exports.p_tiny = prodTinyPng
 exports.d_svg = devSvgSprite
 exports.d_font = devFonts
+exports.other = movingAssets
 exports.bs = watchFiles
 
+exports.dev = gulp.series(
+  cleanDir,
+  movingAssets,
+  devFonts,
+  devSvgSprite,
+  devImageMin,
+  devHtml,
+  devStyles,
+  watchFiles
+)
 
-
-exports.dev = gulp.series(cleanDir, devFonts, devHtml, devStyles, devImageMin, devSvgSprite, watchFiles)
-
-exports.prod = gulp.series(cleanDir, devFonts, devHtml, devStyles, prodTinyPng, devSvgSprite, prodImageMin)
+exports.prod = gulp.series(
+  cleanDir,
+  movingAssets,
+  devFonts,
+  devSvgSprite,
+  prodImageMin,
+  prodHtml,
+  prodStyles,
+  prodTinyPng,
+)
