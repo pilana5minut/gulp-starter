@@ -1,20 +1,21 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="page"
+      lang="en">
 
 <head>
-  <meta charset="UTF-8">
   <title>Starter kit</title>
+  <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible"
         content="IE=edge">
   <meta name="viewport"
         content="width=device-width, initial-scale=1.0">
   <link rel="preload"
-        href="fonts\Alkatra-Regular.woff2"
+        href="fonts/Damion-Regular.woff2"
         as="font"
         crossorigin
         type="font/woff2">
   <link rel="shortcut icon"
-        href="assets\favicon.svg"
+        href="assets/favicon.svg"
         type="image/x-icon">
   <link rel="stylesheet"
         href="css/libs.min.css">
@@ -23,18 +24,22 @@
 
 </head>
 
-<body>
+<body class="page__body">
 
-  @@include("html/header.html")
+  <!-- Удали разметку и стили заглушки starter-plug из main.scss -->
 
-  <main class="main">
+  <div class="starter-plug">
+    <div class="starter-plug__image"></div>
+    <p class="starter-plug__title"> Gulp starter kit<br>by pilana5minut </p>
+  </div>
 
-    @@include("html/section-about.html")
-
-  </main>
-
-  @@include("html/footer.html")
-
+  <div class="page__container">
+    <!-- @@include("html/header.html") -->
+    <main class="page__content">
+      <!-- @@include("html/section-about.html") -->
+    </main>
+    <!-- @@include("html/footer.html") -->
+  </div>
 </body>
 
 </html>

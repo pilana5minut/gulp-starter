@@ -1,3 +1,5 @@
 // Используй snippet --font-face
 // Образец
-// @include font-face("FontName", "../fonts/FileName", 400, normal);
+// @include font-face("anyFontName", "../fonts/FileName", 400, normal);
+
+@include font-face("Damion", "../fonts/Damion-Regular", 400, normal);
