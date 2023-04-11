@@ -1,11 +1,40 @@
-// controller import
+@import "variables";
+@import "mixins";
+@import "fonts";
+@import "common";
 
-@import "controller/global";
-@import "controller/common";
-
-// partials import
-
+// import partials
 @import "partials/footer";
 @import "partials/header";
 @import "partials/section-about";
 @import "partials/section-";
+
+// Удали стили и разметку заглушки starter-plug из index.html
+
+.starter-plug {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--color-background-section);
+  row-gap: 33px;
+  padding: 3%;
+  width: 100%;
+  height: 100%;
+
+  &__image {
+    width: 100%;
+    min-height: 66%;
+    background-image: url("../assets/starter-plug.svg");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+  }
+
+  &__title {
+    width: 100%;
+    font-size: 55px;
+    text-align: center;
+    color: var(--color-root-font);
+  }
+}
