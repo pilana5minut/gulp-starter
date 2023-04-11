@@ -1,6 +1,6 @@
 {
   "name": "pila-gulp-starter-kit",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Starter kit based on task runner Gulp for web layout",
   "main": "gulpfile.js",
   "scripts": {
