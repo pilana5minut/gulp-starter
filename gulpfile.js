@@ -1,23 +1,27 @@
 const browserSync = require("browser-sync").create();
 const del = require("del");
+const webpackStream = require("webpack-stream");
 // Gulp plagins
 const gulp = require("gulp");
 const autoPrefixer = require("gulp-autoprefixer");
-const cheerio = require("gulp-cheerio")
+const babel = require("gulp-babel");
+const cheerio = require("gulp-cheerio");
 const cleanCss = require("gulp-clean-css");
 const fileInclude = require("gulp-file-include");
-const groupCssMediaQueries = require("gulp-group-css-media-queries")
-const htmlMin = require("gulp-htmlmin")
+const groupCssMediaQueries = require("gulp-group-css-media-queries");
+const htmlMin = require("gulp-htmlmin");
 const imageMin = require("gulp-imagemin");
 const newer = require("gulp-newer");
 const notify = require("gulp-notify");
+const plumber = require("gulp-plumber");
 const rename = require("gulp-rename");
 const sass = require("gulp-sass")(require("sass"));
-const size = require("gulp-size")
-const svgSprite = require("gulp-svg-sprite")
+const size = require("gulp-size");
+const svgSprite = require("gulp-svg-sprite");
 const tinyPngCompress = require("gulp-tinypng-compress");
 const ttf2woff = require("gulp-ttf2woff");
 const ttf2woff2 = require("gulp-ttf2woff2");
+const uglify = require("gulp-uglify");
 const webp = require("gulp-webp");
 
 ////////// For HTML ///////////////////////////////////////////////////////////////////////////////
@@ -25,20 +29,20 @@ const webp = require("gulp-webp");
 
 function devHtml() {
   return gulp.src(["./src/*.html"])
-    .pipe(fileInclude().on("error", notify.onError(error => ({
-      title: "devHtml",
-      message: error.message,
-    }))))
+    .pipe(plumber(
+      notify.onError({
+        title: "devHtml",
+        message: "Error: <%= error.message %>"
+      })
+    ))
+    .pipe(fileInclude())
     .pipe(gulp.dest("./public"))
     .pipe(browserSync.stream())
 }
 
 function prodHtml() {
   return gulp.src(["./src/*.html"])
-    .pipe(fileInclude().on("error", notify.onError(error => ({
-      title: "prodHtml",
-      message: error.message,
-    }))))
+    .pipe(fileInclude())
     .pipe(size({
       title: "  before  compression HTML",
       // showFiles: true,
@@ -59,10 +63,13 @@ function prodHtml() {
 
 function devStyles() {
   return gulp.src("./src/scss/**/*.scss", { sourcemaps: true })
-    .pipe(sass({ outputStyle: "expanded" }).on("error", notify.onError(error => ({
-      title: "devStyles",
-      message: error.message,
-    }))))
+    .pipe(plumber(
+      notify.onError({
+        title: "devStyles",
+        message: "Error: <%= error.message %>"
+      })
+    ))
+    .pipe(sass({ outputStyle: "expanded" }))
     .pipe(autoPrefixer())
     .pipe(groupCssMediaQueries())
     .pipe(size({
@@ -84,20 +91,23 @@ function devStyles() {
   03 - Добавляет вендорные префиксы основываясь на значении ключа "browserslist" указанного в package.json
   04   Группирует все @meida выражения в конце файла, сортируя их основываясь на заданном условии
   05 - Выводит в консоль текущий размер всех файлов по отдельности и общий размер до сжатия
-  06 - Записывает промежуточный результат результат в директорию public (Без исходных карт!)
+  06 - Записывает промежуточный результат результат в директорию public ( Без исходных карт )
   07 - Добавляет в имени файла суффикс .min
   08 - Применяе алгоритм компрессии на основе параметра переданного в функцию cleanCss()
   09 - Выводит в консоль текущий размер всех файлов по отдельности и общий размер после сжатия
-  10 - Записывает сжатый результат в директорию public (Добавляет исходные карты!)
+  10 - Записывает сжатый результат в директорию public ( Добавляет исходные карты )
   */
 }
 
 function prodStyles() {
   return gulp.src("./src/scss/**/*.scss")
-    .pipe(sass({ outputStyle: "expanded" }).on("error", notify.onError(error => ({
-      title: "prodStyles",
-      message: error.message,
-    }))))
+    .pipe(plumber(
+      notify.onError({
+        title: "prodStyles",
+        message: "Error: <%= error.message %>"
+      })
+    ))
+    .pipe(sass({ outputStyle: "expanded" }))
     .pipe(autoPrefixer())
     .pipe(groupCssMediaQueries())
     .pipe(size({
@@ -113,6 +123,35 @@ function prodStyles() {
     .pipe(gulp.dest("./public/css"))
   /*  Описание:
     - production версия отличается от develop только лишь отсутствием исходных карт и не сохраняет промежуточный вариант
+  */
+}
+
+////////// For JavaScript /////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+function devJsProcess() {
+  return gulp.src("./src/js/*.js", { sourcemaps: true })
+    .pipe(plumber(
+      notify.onError({
+        title: "devJsProcess",
+        message: "Error: <%= error.message %>"
+      })
+    ))
+    .pipe(babel())
+    .pipe(webpackStream({
+      mode: "development"
+    }))
+    .pipe(uglify())
+    .pipe(gulp.dest("./public/js", { sourcemaps: true }))
+    .pipe(browserSync.stream())
+  /*  Описание:
+  1 - src() забирает все файлы с расширением js, во всех вложенных директориях, внутри директории js
+  2   plumber() перехватывает ошибки в потоке
+  3 - babel() конвертирует современный синтаксис в синтаксис доступный для старых браузеров,
+      основываясь на значении ключа "browserslist" указанного в package.json
+  4 - webpackStream() объединяет все модули в режиме development
+  5 - uglify() применяет алгоритм компрессии кода для уменьшения итогового размера
+  6 - dest() складывает результат в директорию назначения ( Добавляет исходные карты )
   */
 }
 
@@ -262,10 +301,12 @@ function movingAssets() {
 function watchFiles() {
   browserSync.init({
     server: { baseDir: "./public", },
-    // open: false,
+    // notify: false,
+    open: false,
   });
   gulp.watch("./src/**/*.html", devHtml);
   gulp.watch("./src/scss/**/*.scss", devStyles);
+  gulp.watch("./src/js/*.js", devJsProcess);
   gulp.watch("./src/images/__sprite/*.svg", devSvgSprite);
   gulp.watch("./src/assets/**", movingAssets);
   gulp.watch("./src/fonts/*.ttf", devFonts);
@@ -284,6 +325,7 @@ exports.clean = cleanDir
 exports.d_html = devHtml
 exports.p_html = prodHtml
 exports.d_stl = devStyles
+exports.d_js = devJsProcess
 exports.p_stl = prodStyles
 exports.d_images = devImageMin
 exports.p_images = prodImageMin
@@ -300,6 +342,7 @@ exports.dev = gulp.series(
   devSvgSprite,
   devImageMin,
   devHtml,
+  devJsProcess,
   devStyles,
   watchFiles
 )
@@ -311,6 +354,7 @@ exports.prod = gulp.series(
   devSvgSprite,
   prodImageMin,
   prodHtml,
+  devJsProcess,
   prodStyles,
   prodTinyPng,
 )
