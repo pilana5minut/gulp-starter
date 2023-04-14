@@ -302,7 +302,7 @@ function watchFiles() {
   browserSync.init({
     server: { baseDir: "./public", },
     // notify: false,
-    open: false,
+    // open: false,
   });
   gulp.watch("./src/**/*.html", devHtml);
   gulp.watch("./src/scss/**/*.scss", devStyles);
