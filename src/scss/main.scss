@@ -9,7 +9,7 @@
 @import "partials/section-about";
 @import "partials/section-";
 
-// Удали стили и разметку заглушки starter-plug из index.html
+// Удали стили, и разметку заглушки starter-plug из index.html
 
 .starter-plug {
   display: flex;
@@ -25,7 +25,7 @@
   &__image {
     width: 100%;
     min-height: 66%;
-    background-image: url("../images/starter-plug.svg");
+    background-image: url("../images/__starter-plug.svg");
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;
