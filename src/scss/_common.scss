@@ -7,8 +7,8 @@
   // outline: solid 1px greenyellow;
 }
 
+//html
 .page {
-  //html
   height: 100%;
   box-sizing: border-box;
   font-family: var(--root-font);
@@ -16,8 +16,8 @@
   scrollbar-gutter: stable;
 }
 
+//body
 .page__body {
-  //body
   min-width: 320px;
   height: 100%;
   margin: 0;
@@ -26,12 +26,12 @@
   background-image: url("../assets/cell.svg");
 }
 
+//general wrapper
 .page__container {
-  //general wrapper
 }
 
+//main
 .page__content {
-  //main
 }
 
 h1,
