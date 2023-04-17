@@ -16,7 +16,6 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: var(--color-background-section);
   row-gap: 33px;
   padding: 3%;
   width: 100%;
@@ -33,7 +32,7 @@
 
   &__title {
     width: 100%;
-    font-size: 77px;
+    font-size: 44px;
     text-align: center;
     color: var(--color-root-font);
     text-shadow: 3px 3px 2px #5f1e1e;

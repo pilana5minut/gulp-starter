@@ -5,6 +5,7 @@
 *::before {
   box-sizing: inherit;
   // outline: solid 1px greenyellow;
+  outline-offset: -1px;
 }
 
 //html
@@ -13,21 +14,21 @@
   box-sizing: border-box;
   font-family: var(--root-font);
   scroll-behavior: smooth;
-  scrollbar-gutter: stable;
+  // scrollbar-gutter: stable;
+  background-image: url("../assets/cell-96-160.svg");
 }
 
 //body
 .page__body {
-  min-width: 320px;
   height: 100%;
+  min-width: 320px;
   margin: 0;
   font-size: 16px;
-  background-color: var(--color-background-section);
-  background-image: url("../assets/cell.svg");
+  // background-color: var(--color-background-plug);
 }
 
-//general wrapper
-.page__container {
+//general div
+.page__wrapper {
 }
 
 //main
@@ -63,9 +64,9 @@ img {
 ////////// common classes /////////////////////////////////////////////////////////////////////////
 
 .container {
-  max-width: 1240px;
+  max-width: var(--container-width);
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 var(--container-padding);
 }
 
 .reset-button {
