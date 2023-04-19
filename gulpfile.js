@@ -139,7 +139,10 @@ function devJsProcess() {
     ))
     .pipe(babel())
     .pipe(webpackStream({
-      mode: "development"
+      mode: "development",
+      output: {
+        filename: "bundle.js"
+      }
     }))
     .pipe(uglify())
     .pipe(gulp.dest("./public/js", { sourcemaps: true }))
