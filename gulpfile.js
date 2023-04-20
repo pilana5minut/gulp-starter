@@ -130,7 +130,7 @@ function prodStyles() {
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 function devJsProcess() {
-  return gulp.src("./src/js/*.js", { sourcemaps: true })
+  return gulp.src("./src/js/main.js", { sourcemaps: true })
     .pipe(plumber(
       notify.onError({
         title: "devJsProcess",
@@ -309,7 +309,7 @@ function watchFiles() {
   });
   gulp.watch("./src/**/*.html", devHtml);
   gulp.watch("./src/scss/**/*.scss", devStyles);
-  gulp.watch("./src/js/*.js", devJsProcess);
+  gulp.watch("./src/js/**/*.js", devJsProcess);
   gulp.watch("./src/images/__sprite/*.svg", devSvgSprite);
   gulp.watch("./src/assets/**", movingAssets);
   gulp.watch("./src/fonts/*.ttf", devFonts);
