@@ -21,7 +21,6 @@ const svgSprite = require("gulp-svg-sprite");
 const tinyPngCompress = require("gulp-tinypng-compress");
 const ttf2woff = require("gulp-ttf2woff");
 const ttf2woff2 = require("gulp-ttf2woff2");
-const uglify = require("gulp-uglify");
 const webp = require("gulp-webp");
 
 ////////// For HTML ///////////////////////////////////////////////////////////////////////////////
@@ -130,7 +129,7 @@ function prodStyles() {
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 function devJsProcess() {
-  return gulp.src("./src/js/main.js", { sourcemaps: true })
+  return gulp.src("./src/js/entry.js")
     .pipe(plumber(
       notify.onError({
         title: "devJsProcess",
@@ -139,22 +138,23 @@ function devJsProcess() {
     ))
     .pipe(babel())
     .pipe(webpackStream({
-      mode: "development",
+      // mode: 'development',
+      mode: 'production',
       output: {
         filename: "bundle.js"
-      }
+      },
+      // devtool: "eval-source-map", // for development
+      devtool: "source-map", // for production
     }))
-    .pipe(uglify())
-    .pipe(gulp.dest("./public/js", { sourcemaps: true }))
+    .pipe(gulp.dest("./public/js"))
     .pipe(browserSync.stream())
   /*  Описание:
-  1 - src() забирает все файлы с расширением js, во всех вложенных директориях, внутри директории js
+  1 - src() смотрит на импорты в файле entry.js внутри директории js
   2   plumber() перехватывает ошибки в потоке
   3 - babel() конвертирует современный синтаксис в синтаксис доступный для старых браузеров,
       основываясь на значении ключа "browserslist" указанного в package.json
-  4 - webpackStream() объединяет все модули в режиме development
-  5 - uglify() применяет алгоритм компрессии кода для уменьшения итогового размера
-  6 - dest() складывает результат в директорию назначения ( Добавляет исходные карты )
+  4 - webpackStream() объединяет все модули в режиме production ( Добавляет исходные карты )
+  5 - dest() складывает результат в директорию назначения
   */
 }
 
