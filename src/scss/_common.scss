@@ -24,16 +24,14 @@
   height: 100%;
   margin: 0;
   font-size: 16px;
-  background-color: var(--color-background-plug);
+  background: radial-gradient(circle, rgba(185, 60, 60, 1) 0%, rgba(30, 35, 35, 1) 100%);
 }
 
 //general div
-.page__wrapper {
-}
+.page__general-wrapper {}
 
 //main
-.page__content {
-}
+.page__content {}
 
 h1,
 h2,

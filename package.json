@@ -1,6 +1,6 @@
 {
   "name": "pila-gulp-starter-kit",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Starter kit based on task runner Gulp for web layout",
   "main": "gulpfile.js",
   "scripts": {},
@@ -40,7 +40,6 @@
     "gulp-tinypng-compress": "^1.2.5",
     "gulp-ttf2woff": "^1.1.1",
     "gulp-ttf2woff2": "^4.0.1",
-    "gulp-uglify": "^3.0.2",
     "gulp-webp": "^4.0.1",
     "sass": "^1.60.0",
     "webpack": "^5.78.0",
